@@ -168,7 +168,7 @@
       };
 
       Twix.prototype.isSame = function(period) {
-        return this.start.isSame(this.end, period);
+        return this.start && this.start.isSame(this.end, period);
       };
 
       Twix.prototype.length = function(period) {
@@ -204,7 +204,7 @@
         }
         hasNext = (function(_this) {
           return function() {
-            return (!_this.allDay && start <= end && (!minHours || !start.isSame(end) || _this.end.hours() > minHours)) || (_this.allDay && start < end);
+            return (!_this.allDay && start <= end && (!minHours || !(start && start.isSame(end)) || _this.end.hours() > minHours)) || (_this.allDay && start < end);
           };
         })(this);
         return this._iterateHelper(period, start, hasNext, intervalAmount);
@@ -225,7 +225,7 @@
 
       Twix.prototype.humanizeLength = function() {
         if (this.allDay) {
-          if (this.isSame("day")) {
+          if (this.isSame && this.isSame("day")) {
             return "all day";
           } else {
             return this.start.from(this.end.clone().add(1, "day"), true);
@@ -269,7 +269,7 @@
       };
 
       Twix.prototype.isEmpty = function() {
-        return this._trueStart.isSame(this._trueEnd);
+        return this._trueStart && this._trueStart.isSame(this._trueEnd);
       };
 
       Twix.prototype.overlaps = function(other) {
@@ -352,7 +352,7 @@
           if (open === (other.type + 1) % 2) {
             if (start) {
               last = results[results.length - 1];
-              if (last && last.end.isSame(start)) {
+              if (last && last.end && last.end.isSame(start)) {
                 last.end = other.time;
               } else {
                 endTime = allDay ? other.time.clone().subtract(1, 'd') : other.time;
@@ -433,13 +433,13 @@
         while (start < final && ((times == null) || times[i])) {
           end = dur ? start.clone().add(dur) : times[i].clone();
           end = moment.min(final, end);
-          if (!start.isSame(end)) {
+          if (!(start && start.isSame(end)) {
             vals.push(moment.twix(start, end));
           }
           start = end;
           i += 1;
         }
-        if (!end.isSame(this._trueEnd) && times) {
+        if (!(end && end.isSame(this._trueEnd)) && times) {
           vals.push(moment.twix(end, this._trueEnd));
         }
         return vals;
