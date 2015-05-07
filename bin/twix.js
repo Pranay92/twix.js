@@ -433,7 +433,7 @@
         while (start < final && ((times == null) || times[i])) {
           end = dur ? start.clone().add(dur) : times[i].clone();
           end = moment.min(final, end);
-          if (!(start && start.isSame(end)) {
+          if (!(start && start.isSame(end))) {
             vals.push(moment.twix(start, end));
           }
           start = end;
